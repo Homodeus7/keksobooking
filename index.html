@@ -104,7 +104,7 @@
         <fieldset class="ad-form__element">
           <label class="ad-form__label" for="type">Тип жилья</label>
           <select id="type" name="type">
-            <option value="bungalow">Бунгало</option>
+            <option value="'bungalow'">Бунгало</option>
             <option value="flat" selected>Квартира</option>
             <option value="house">Дом</option>
             <option value="palace">Дворец</option>
@@ -220,7 +220,7 @@
       <ul class="popup__features">
         <li class="popup__feature popup__feature--wifi"></li>
         <li class="popup__feature popup__feature--dishwasher"></li>
-        <li class="popup__feature popup__feature--parking"></li>
+        <li class="popup__feature popuptype__feature--parking"></li>
         <li class="popup__feature popup__feature--washer"></li>
         <li class="popup__feature popup__feature--elevator"></li>
         <li class="popup__feature popup__feature--conditioner"></li>
@@ -248,6 +248,7 @@
     </div>
   </template>
   <script src="./js/main.js" type="module"></script>
+  <script src="./js/form.js" type="module"></script>
   <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.20/lodash.min.js"></script>
 </body>
 
