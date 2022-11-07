@@ -30,7 +30,6 @@ const renderOffers = () => {
     cardList.appendChild(cardListFragment);
 };
 
-
 const renderAutor = ({ avatar }) => {
     const autorsCard = cardTemplate.cloneNode(true);
 
