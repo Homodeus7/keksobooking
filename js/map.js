@@ -1,5 +1,3 @@
-// В этом задании мы добавим в проект интерактивную карту и начнём реализацию сценария переключения режимов страницы между неактивным и активным, который завязан на карте.
-// Удалите код отрисовки одного из сгенерированных DOM-элементов объявления, который был нужен только для разработки.
 // Реализуйте с помощью JavaScript перевод страницы в неактивное состояние, все пункты, кроме первого про карту.
 // Важно. Неактивность должна добавляться именно средствами JavaScript, иначе, если классы и атрибуты добавить напрямую в HTML, при ошибке в скриптах или ошибке загрузки скриптов сайт будет недоступен пользователю.
 // С помощью полученных обновлений (стили, изображения и скрипты необходимые для Leaflet) от Кексобота реализуйте отображение карты и дальнейший переход страницы в активное состояние. Координаты центра Токио найдите самостоятельно.
@@ -8,13 +6,20 @@
 // Реализуйте с помощью API карт выбор адреса путём перемещения главной метки. Ручное редактирование поля запрещено, однако поле должно быть доступно, чтобы значение отправлялось на сервер с формой.
 // Напишите код, который добавит на карту метки объявлений, «обычные». Иконка для меток есть в обновлении, файл pin.svg. Для отображения используйте данные для разработки, которые мы генерировали несколько заданий назад.
 // С помощью API карт реализуйте показ балуна с подробной информацией об объявлении. Учтите нюансы поведения и ограничения для обычных меток и главной.
-
 // Задача: разобраться как подтягивать данные из массива для отрисовки "обычных" объявлений!
 // понять куда выводить координаты
 
-import { autors, offers } from './data.js'
+// Реализуйте с помощью JavaScript перевод страницы в неактивное состояние, все пункты, кроме первого про карту.
+import { offers } from './data.js'
 
-console.log(offers)
+const adForm = document.querySelector('.ad-form');
+const adFormElement = document.querySelectorAll('.ad-form__element');
+const mapFilters = document.querySelector('.map__filters');
+const mapFilter = document.querySelectorAll('.map__filter');
+const inputAdress = document.querySelector('#address');
+
+console.log(inputAdress)
+// Отрисовка карты
 
 const map = L.map('map-canvas')
     .on('load', () => {
@@ -25,12 +30,27 @@ const map = L.map('map-canvas')
         lng: 139.78042,
     }, 12);
 
-L.tileLayer(
-    'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-    {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-    },
-).addTo(map);
+// Проверка инициализации
+
+if (map === undefined) {
+    adForm.classList.add(`ad-form--disabled`);
+    mapFilters.classList.add(`map__filters--disabled`);
+
+    for (let i = 0; i < adFormElement.length; i++) {
+        adFormElement[i].disabled = true;
+    }
+
+    for (let i = 0; i < mapFilter.length; i++) {
+        mapFilter[i].disabled = true;
+    }
+} else {
+    L.tileLayer(
+        'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+        {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        },
+    ).addTo(map);
+}
 
 // Реализуйте с помощью API карт выбор адреса путём перемещения главной метки. Ручное редактирование поля запрещено, однако поле должно быть доступно, чтобы значение отправлялось на сервер с формой.
 
@@ -58,7 +78,7 @@ mainPinMarker.addTo(map);
 // Метод getLatLng() возвращает объект с новыми координатами.
 
 mainPinMarker.on('moveend', (evt) => {
-    console.log(evt.target.getLatLng());
+    inputAdress.value = evt.target.getLatLng();
 });
 
 // Содержимым балуна должен быть наш HTML, а не просто текст
