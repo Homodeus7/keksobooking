@@ -1,8 +1,6 @@
-import { autors, offers } from './data.js'
-
+lnglng
 const cardTemplate = document.querySelector('#card').content.querySelector('.popup');
 const cardList = document.querySelector('.map__canvas');
-
 
 const renderOffer = ({ title, address, price, type, rooms, guests, checkin, checkout, features, description, photos }) => {
     const offerCard = cardTemplate.cloneNode(true);
@@ -47,5 +45,6 @@ const renderAutors = () => {
 
     cardList.appendChild(cardListFragment);
 };
+
 
 export { renderOffers, renderAutors };

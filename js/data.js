@@ -53,7 +53,8 @@ const createOffer = () => {
             features: FEATURES.slice(0, randomInteger(1, FEATURES.length - 1)),
             description: TYPE[randomTypeIndex] + ' with ' + randomRooms + ' rooms, ' + 'features: ' + randomFeatures + '.',
             photos: 'http://o0.github.io/assets/images/tokyo/hotel' + randomInteger(1, 30) + '.jpg',
-            location: ['x: ' + '35.' + randomInteger(1, 99) + '000', ' y: ' + '139.' + randomInteger(1, 99) + '000'],
+            lat: `35.${randomInteger(1, 99)}000`,
+            lng: `139.${randomInteger(1, 99)}000`,
         })
     }
 };
