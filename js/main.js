@@ -11,4 +11,3 @@ fetch('https://23.javascript.pages.academy/keksobooking/data')
         console.log(points)
         createPoints(points);
     });
-

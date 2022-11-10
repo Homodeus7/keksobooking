@@ -1,4 +1,3 @@
-lnglng
 const cardTemplate = document.querySelector('#card').content.querySelector('.popup');
 const cardList = document.querySelector('.map__canvas');
 
