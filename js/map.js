@@ -10,7 +10,6 @@
 // понять куда выводить координаты
 
 // Реализуйте с помощью JavaScript перевод страницы в неактивное состояние, все пункты, кроме первого про карту.
-import { offers } from './data.js'
 
 const adForm = document.querySelector('.ad-form');
 const adFormElement = document.querySelectorAll('.ad-form__element');
@@ -18,12 +17,10 @@ const mapFilters = document.querySelector('.map__filters');
 const mapFilter = document.querySelectorAll('.map__filter');
 const inputAdress = document.querySelector('#address');
 
-console.log(inputAdress)
 // Отрисовка карты
 
 const map = L.map('map-canvas')
     .on('load', () => {
-        console.log('Карта инициализирована')
     })
     .setView({
         lat: 35.65631,
@@ -89,42 +86,81 @@ const createCustomPopup = (point) => {
     const cardTemplate = document.querySelector('#card').content.querySelector('.popup');
     const popupElement = cardTemplate.cloneNode(true);
 
-    popupElement.querySelector('.popup__title').textContent = point.title;
-    popupElement.querySelector('.popup__text--price').textContent = point.price;
-    popupElement.querySelector('.popup__description').textContent = point.lat, point.lng;
+    popupElement.querySelector('.popup__avatar').src = point.author.avatar;
+    popupElement.querySelector('.popup__title').textContent = point.offer.title;
+    popupElement.querySelector('.popup__text--address').textContent = point.offer.address;
+    popupElement.querySelector('.popup__text--price').textContent = point.offer.price;
+    popupElement.querySelector('.popup__type').textContent = point.offer.type;
+
+    popupElement.querySelector('.popup__text--capacity').textContent = `${point.offer.rooms} комнаты для ${point.offer.guests} гостей`;
+    popupElement.querySelector('.popup__text--time').textContent = `Заезд после ${point.offer.checkin}, выезд до ${point.offer.checkout}`;
+    popupElement.querySelector('.popup__features').textContent = point.offer.features;
+
+    popupElement.querySelector('.popup__description').textContent = point.description;
+    popupElement.querySelector('.popup__photos').textContent = point.photos;
+
+
+    // title: "Квартира студия в престижном районе", address: "Chiyoda-ku, Tōkyō-to 102-0091", price: 88000, … }
+    // ​​​
+    // address: "Chiyoda-ku, Tōkyō-to 102-0091"
+    // ​​​
+    // checkin: "7:00"
+    // ​​​
+    // checkout: "10:00"
+    // ​​​
+    // description: "Комната в трёхкомнатной квартире, подойдёт молодым путешественникам."
+    // ​​​
+    // features: Array(6) [ "wifi", "washer", "elevator", … ]
+    // ​​​
+    // guests: 5
+    // ​​​
+    // photos: Array(3) [ "https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/cameron-venti-R64qgQ6rr_o.jpg", "https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/brandon-hoogenboom-SNxQGWxZQi0.jpg", "https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/claire-rendall-b6kAwr1i0Iw.jpg" ]
+    // ​​​
+    // price: 88000
+    // ​​​
+    // rooms: 6
+    // ​​​
+    // title: "Квартира студия в престижном районе"
+    // ​​​
+    // type: "bungalow"
 
     return popupElement;
 };
 
 // А дальше в проходке forEach по циклу насоздаём маркеров и понадобавляем их на карту.
 
-offers.forEach((point) => {
-    const { lat, lng } = point;
+const createPoints = (points) => {
 
-    const icon = L.icon({
-        iconUrl: '/leaflet/img/pin.svg',
-        iconSize: [40, 40],
-        iconAnchor: [20, 40],
-    });
+    points.forEach((point) => {
+        const { lat, lng } = point.location;
 
-    const marker = L.marker(
-        {
-            lat,
-            lng,
-        },
-        {
-            icon,
-        },
-    );
+        const icon = L.icon({
+            iconUrl: '/leaflet/img/pin.svg',
+            iconSize: [40, 40],
+            iconAnchor: [20, 40],
+        });
 
-    //keepInView, чтобы карта автоматичски переместилась, если балун вылезает за границы. Кликните по самой верхей метке, чтобы увидеть это в действии.
-
-    marker
-        .addTo(map)
-        .bindPopup(
-            createCustomPopup(point),
+        const marker = L.marker(
             {
-                keepInView: true,
+                lat,
+                lng,
+            },
+            {
+                icon,
             },
         );
-});
+
+        //keepInView, чтобы карта автоматичски переместилась, если балун вылезает за границы. Кликните по самой верхей метке, чтобы увидеть это в действии.
+
+        marker
+            .addTo(map)
+            .bindPopup(
+                createCustomPopup(point),
+                {
+                    keepInView: true,
+                },
+            );
+    });
+}
+
+export { createPoints }
