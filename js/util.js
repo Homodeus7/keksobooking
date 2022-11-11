@@ -1,4 +1,9 @@
 // Случайное число от min до (max+1)
+const Keys = {
+    ESC: 'Esc',
+    ESCAPE: 'Escape',
+}
+
 const randomInteger = (min, max) => {
     let rand = min + Math.random() * (max + 1 - min);
     return Math.floor(rand);
@@ -15,4 +20,8 @@ const getRandomArrayElement = (elements) => {
     return elements[randomInteger(0, elements.length - 1)];
 };
 
-export { randomInteger, randomInRange, getRandomArrayElement }
+const checkEsc = (evt) => {
+    return evt.key === Keys.ESC || evt.key === Keys.ESCAPE;
+}
+
+export { randomInteger, randomInRange, getRandomArrayElement, checkEsc }

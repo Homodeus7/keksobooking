@@ -1,13 +1,17 @@
 
 import './map.js';
 import './form.js';
-
+import { request } from './fetch.js';
+import { showError } from './message.js';
 import { createPoints } from './map.js'
 
 
-fetch('https://23.javascript.pages.academy/keksobooking/data')
-    .then((objects) => objects.json())
-    .then((points) => {
-        console.log(points)
-        createPoints(points);
-    });
+const onSuccess = (points) => {
+    createPoints(points);
+}
+
+const onError = () => {
+    showError('Ошибка размещения объявления, попробуйте еще раз', 'Закрыть')
+}
+
+request(onSuccess, onError, 'GET')
