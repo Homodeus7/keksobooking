@@ -2,6 +2,7 @@
 import { showError, showSuccess, onAlertEscKeydown } from './message.js';
 import { request } from './fetch.js';
 
+
 const MIN_NAME_LENGTH = 30;
 const MAX_NAME_LENGTH = 100;
 const adForm = document.querySelector('.ad-form');
@@ -146,7 +147,7 @@ const onSuccess = () => {
 }
 
 const onError = () => {
-     showError('Что-то пошло не так', 'Попробуйте еще раз');
+    showError('Что-то пошло не так', 'Попробуйте еще раз');
 }
 
 adForm.addEventListener('submit', (evt) => {
