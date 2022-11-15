@@ -1,9 +1,59 @@
-const housingSelect = document.querySelector('#housing-type');
-const priceSelect = document.querySelector('#housing-price');
-const roomsSelect = document.querySelector('#housing-rooms');
-const guestsSelect = document.querySelector('#housing-guests');
-const featuresSelect = document.querySelector('#housing-features');
+import { createPoints } from './map.ls'
 
-housingSelect.addEventListener('change', () => {
-    
+// const housingSelect = document.querySelector('#housing-type');
+// const priceSelect = document.querySelector('#housing-price');
+// const roomsSelect = document.querySelector('#housing-rooms');
+// const guestsSelect = document.querySelector('#housing-guests');
+// const featuresSelect = document.querySelector('#housing-features');
+const SIMILAR_OFFER_COUNT = 10;
+
+const filter = document.querySelector('.map__filters')
+let arrayOffers = []
+
+const removePhotos = () => {
+    const images = document.querySelectorAll('.picture');
+    if (images) {
+        images.forEach(element => {
+            element.remove();
+        });
+    }
+}
+
+const filters = {
+    'housing-type': (value) => {
+        createPoints(arrayOffers.filter(p => p.offer.type === value))
+    },
+}
+
+
+housingSelect.addEventListener('change', (evt) => {
+    const item = evt.target.value
+
+
 })
+
+// ==============offer
+// title: "Квартира студия в престижном районе", address: "Chiyoda-ku, Tōkyō-to 102-0091", price: 88000, … }
+// ​​​
+// address: "Chiyoda-ku, Tōkyō-to 102-0091"
+// ​​​
+// checkin: "7:00"
+// ​​​
+// checkout: "10:00"
+// ​​​
+// description: "Комната в трёхкомнатной квартире, подойдёт молодым путешественникам."
+// ​​​
+// features: Array(6) [ "wifi", "washer", "elevator", … ]
+// ​​​
+// guests: 5
+// ​​​
+// photos: Array(3) [ "https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/cameron-venti-R64qgQ6rr_o.jpg", "https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/brandon-hoogenboom-SNxQGWxZQi0.jpg", "https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/claire-rendall-b6kAwr1i0Iw.jpg" ]
+// ​​​
+// price: 88000
+// ​​​
+// rooms: 6
+// ​​​
+// title: "Квартира студия в престижном районе"
+// ​
+// type: "bungalow"
+// =======================

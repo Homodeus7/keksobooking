@@ -1,5 +1,3 @@
-const SIMILAR_OFFER_COUNT = 10;
-
 const adForm = document.querySelector('.ad-form');
 const adFormElement = document.querySelectorAll('.ad-form__element');
 const mapFilters = document.querySelector('.map__filters');
@@ -16,7 +14,7 @@ const map = L.map('map-canvas')
         lng: 139.78042,
     }, 12);
 
-// Проверка инициализации
+    // Проверка инициализации
 
 if (map === undefined) {
     adForm.classList.add(`ad-form--disabled`);
@@ -70,7 +68,6 @@ mainPinMarker.on('moveend', (evt) => {
 // Содержимым балуна должен быть наш HTML, а не просто текст
 // функция createCustomPopup по получению DOM-элемента из разметки
 
-
 const createCustomPopup = (point) => {
     const cardTemplate = document.querySelector('#card').content.querySelector('.popup');
     const popupElement = cardTemplate.cloneNode(true);
@@ -88,7 +85,9 @@ const createCustomPopup = (point) => {
 
     return popupElement;
 };
+
 // А дальше в проходке forEach по циклу насоздаём маркеров и понадобавляем их на карту.
+
 const createPoints = (points) => {
 
     points.forEach((point) => {
@@ -109,7 +108,9 @@ const createPoints = (points) => {
                     icon,
                 },
             );
+
             //keepInView, чтобы карта автоматичски переместилась, если балун вылезает за границы. Кликните по самой верхей метке, чтобы увидеть это в действии.
+
             marker
                 .addTo(map)
                 .bindPopup(
