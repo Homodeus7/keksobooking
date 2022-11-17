@@ -12,21 +12,25 @@ let arrayOffers = []
 const filters = {
     'housing-type': (value) => {
         if (value === 'any') {
-            createPoints(arrayOffers)
+            return arrayOffers.slice()
         } else {
-            createPoints(arrayOffers.filter(p => p.offer.type === value))
+            return arrayOffers.filter(p => p.offer.type === value)
         }
-
     },
     'housing-price': (value) => {
         if (value === 'any') {
-            createPoints(arrayOffers)
+            return arrayOffers.slice()
         } else if (value === 'middle') {
-            createPoints(arrayOffers.filter(p => p.offer.price >= 10000 && p.offer.price <= 50000))
+            return arrayOffers.filter(p => p.offer.price >= 10000 && p.offer.price <= 50000)
+        } else if (value === 'low') {
+            return arrayOffers.filter(p => p.offer.price <= 10000)
+        } else if (value === 'high') {
+            return arrayOffers.filter(p => p.offer.price >= 50000)
         }
-
     },
 }
+
+
 
 const removePoints = () => {
     const images = document.querySelectorAll('.leaflet-marker-icon ');

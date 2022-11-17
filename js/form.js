@@ -1,142 +1,172 @@
 
 import { showError, showSuccess, onAlertEscKeydown } from './message.js';
 import { request } from './fetch.js';
+import { renderPhoto } from './pictures.js';
 
 
-const MIN_NAME_LENGTH = 30;
-const MAX_NAME_LENGTH = 100;
+
+const IMG_WIDTH = 70;
+const IMG_HEIGHT = 70;
+const MIN_LENGTH = 30;
+const MAX_LENGTH = 100;
+const MAX_PRICE = 1000000;
+const COORDINATE_ROUNDING = 5;
+
+const MIN_PRICE_OF_TYPE = {
+    bungalow: '0',
+    flat: '1000',
+    hotel: '3000',
+    house: '5000',
+    palace: '10000',
+};
+
 const adForm = document.querySelector('.ad-form');
-const selectorType = document.querySelector(`#type`);
-const inputPrise = document.querySelector(`#price`);
-const selectorTimeIn = document.querySelector(`#timein`);
-const selectorTimeOut = document.querySelector(`#timeout`);
-const titleInput = document.querySelector('#title');
-const selectorRoomNumber = document.querySelector('#room_number');
-const selectorRoomCapacity = document.querySelector('#capacity');
-const optionCapacity = selectorRoomCapacity.querySelectorAll('option');
 
-// selectorType.addEventListener('change', (evt) => {
-//     const item = evt.target.value;
+const titleInput = adForm.querySelector('#title');
+const selectorType = adForm.querySelector(`#type`);
+const inputPrise = adForm.querySelector(`#price`);
+const selectorTimeIn = adForm.querySelector(`#timein`);
+const selectorTimeOut = adForm.querySelector(`#timeout`);
+const selectorRoomNumber = adForm.querySelector('#room_number');
+const selectorRoomCapacity = adForm.querySelector('#capacity');
+const selectorAdress = adForm.querySelector('#adress');
+// Для фотографий
+const adFormAvatar = document.querySelector('.ad-form-header__preview');
+const adFormPhoto = document.querySelector('.ad-form__photo');
+const avatarPreview = adFormAvatar.querySelector('img').cloneNode(true);
+const avatarChooser = adForm.querySelector('#avatar');
+const photoChooser = adForm.querySelector('#images');
 
-//     switch (item) {
-//         case `bungalow`:
-//             inputPrise.min = 0;
-//             inputPrise.placeholder = 0;
-//             break
-//         case `flat`:
-//             inputPrise.min = 1000;
-//             inputPrise.placeholder = 1000;
-//             break
-//         case `house`:
-//             inputPrise.min = 5000;
-//             inputPrise.placeholder = 5000;
-//             break
-//         case `palace`:
-//             inputPrise.min = 10000;
-//             inputPrise.placeholder = 10000;
-//             break
-//     }
-// });
+// Извещения-балуны о вводе допустимого кол-ва символов в поле «Заголовок объявления»
+const onTitleValueInput = () => {
+    const valueLength = titleInput.value.length;
+    if (valueLength < MIN_LENGTH) {
+        titleInput.style.borderColor = 'red';
+        titleInput.setCustomValidity(`Ещё ${MIN_LENGTH - valueLength} символов`);
+    } else if (valueLength > MAX_LENGTH) {
+        titleInput.style.borderColor = 'red';
+        titleInput.setCustomValidity(`Удалите лишние ${valueLength - MAX_LENGTH} символов`);
+    } else {
+        titleInput.style.borderColor = 'white';
+        titleInput.setCustomValidity('');
+    }
+    titleInput.reportValidity();
+};
 
-// selectorTimeIn.addEventListener('change', (evt) => {
-//     const item = evt.target.value
+titleInput.addEventListener('input', onTitleValueInput);
 
-//     switch (item) {
-//         case `12:00`: selectorTimeOut.value = `12:00`;
-//             break
-//         case `13:00`: selectorTimeOut.value = `13:00`;
-//             break
-//         case `14:00`: selectorTimeOut.value = `14:00`;
-//             break
-//     }
-// });
+// Извещения-балуны об указании допустимой цены в поле «Цена за ночь»
+const onPriceValueInput = () => {
+    const valuePrice = inputPrise.value;
+    if (valuePrice < MIN_PRICE_OF_TYPE[selectorType.value]) {
+        inputPrise.style.borderColor = 'red';
+    } else if (valuePrice > MAX_PRICE) {
+        inputPrise.style.borderColor = 'red';
+        inputPrise.setCustomValidity(`Максимальная цена за ночь ${MAX_PRICE}.`);
+    } else {
+        inputPrise.style.borderColor = 'white';
+        inputPrise.setCustomValidity('');
+    }
+    inputPrise.reportValidity();
+};
 
-// selectorRoomNumber.addEventListener('change', (evt) => {
-//     const item = evt.target.value;
+inputPrise.addEventListener('input', onPriceValueInput);
 
-//     switch (item) {
-//         case `1`: {
-//             optionCapacity[0].disabled = true;
-//             optionCapacity[1].disabled = true;
-//             optionCapacity[2].disabled = false;
-//             optionCapacity[3].disabled = true;
-//             break
-//         }
-//         case `2`: {
-//             optionCapacity[0].disabled = true;
-//             optionCapacity[1].disabled = false;
-//             optionCapacity[2].disabled = false;
-//             optionCapacity[3].disabled = true;
-//             break
-//         }
-//         case `3`: {
-//             optionCapacity[0].disabled = false;
-//             optionCapacity[1].disabled = false;
-//             optionCapacity[2].disabled = false;
-//             optionCapacity[3].disabled = true;
-//             break
-//         }
-//         case `100`: {
-//             optionCapacity[0].disabled = true;
-//             optionCapacity[1].disabled = true;
-//             optionCapacity[2].disabled = true;
-//             optionCapacity[3].disabled = false;
-//             break
-//         }
-//     }
-// });
+// Поле «Тип жилья» влияет на минимальное значение поля «Цена за ночь»
+const onTypeChange = () => {
+    inputPrise.placeholder = MIN_PRICE_OF_TYPE[selectorType.value];
+    inputPrise.min = MIN_PRICE_OF_TYPE[selectorType.value];
+};
 
-// titleInput.addEventListener('invalid', () => {
-//     if (titleInput.validity.tooShort) {
-//         titleInput.setCustomValidity('Имя должно состоять минимум из 30-ти символов');
-//     } else if (titleInput.validity.tooLong) {
-//         titleInput.setCustomValidity('Имя не должно превышать 100 символов');
-//     } else if (titleInput.validity.valueMissing) {
-//         titleInput.setCustomValidity('Обязательное поле');
-//     } else {
-//         titleInput.setCustomValidity('');
-//     }
-// });
+selectorType.addEventListener('change', onTypeChange);
 
-// titleInput.addEventListener('input', () => {
-//     const valueLength = titleInput.value.length;
-//     if (valueLength < MIN_NAME_LENGTH) {
-//         titleInput.setCustomValidity('Ещё ' + (MIN_NAME_LENGTH - valueLength) + ' симв.');
-//     } else if (valueLength > MAX_NAME_LENGTH) {
-//         titleInput.setCustomValidity('Удалите лишние ' + (valueLength - MAX_NAME_LENGTH) + ' симв.');
-//     } else {
-//         titleInput.setCustomValidity('');
-//     }
-//     titleInput.reportValidity();
-// });
+// Поле «Время заезда» синхронизированно изменят значение «Время выезда»
+const onTimeInChange = () => {
+    selectorTimeOut.value = selectorTimeIn.value;
+};
 
-// adForm.addEventListener('submit', (evt) => {
-//     evt.preventDefault();
+selectorTimeIn.addEventListener('change', onTimeInChange);
 
-//     const formData = new FormData(evt.target);
+// Поле «Время выезда» синхронизированно изменят значение «Время заезда»
+const onTimeOutChange = () => {
+    selectorTimeIn.value = selectorTimeOut.value;
+};
 
-//     fetch(
-//         'https://23.javascript.pages.academy/keksobooking',
-//         {
-//             method: 'POST',
-//             body: formData,
-//         },
-//         // adForm.reset(),
-//     );
-// });
+selectorTimeOut.addEventListener('change', onTimeOutChange);
 
-// Отправляем форму
-// const closeModal = () => {
-//     uploadModal.classList.add('hidden');
-//     scrollOff.classList.remove('modal-open');
-//     uploadInput.value = '';
-// }
+// Поле «Количество комнат» вводит ограничения на количество гостей в поле «Количество мест»
+const onRoomsChange = () => {
+    if (selectorRoomNumber.value === '1' && selectorRoomCapacity.value !== '1') {
+        selectorRoomCapacity.style.borderColor = 'red';
+        selectorRoomCapacity.setCustomValidity('В 1 комнате можно разместить только 1 гостя');
+    } else if (selectorRoomNumber.value === '2' && selectorRoomCapacity.value !== '1' && selectorRoomCapacity.value !== '2') {
+        selectorRoomCapacity.style.borderColor = 'red';
+        selectorRoomCapacity.setCustomValidity('В 2 комнатах можно разместить только от 1 до 2 гостей');
+    } else if (selectorRoomNumber.value === '3' && selectorRoomCapacity.value === '0') {
+        selectorRoomCapacity.style.borderColor = 'red';
+        selectorRoomCapacity.setCustomValidity('В 3 комнатах можно разместить только от 1 до 3 гостей');
+    } else if (selectorRoomNumber.value === '100' && selectorRoomCapacity.value !== '0') {
+        selectorRoomCapacity.style.borderColor = 'red';
+        selectorRoomCapacity.setCustomValidity('100 комнат не для гостей');
+    } else {
+        selectorRoomCapacity.style.borderColor = 'white';
+        selectorRoomCapacity.setCustomValidity('');
+    }
+    selectorRoomCapacity.reportValidity();
+};
 
-// document.addEventListener('keydown', (evt) => {
-//     if (evt.key === ('Escape' || 'Esc')) {
-//         closeModal();
-//     }
-// });
+selectorRoomNumber.addEventListener('change', onRoomsChange);
+selectorRoomCapacity.addEventListener('change', onRoomsChange);
+
+// Создать превью аватара (Ваша фотография)
+const getAvatar = (result) => {
+    const fragment = document.createDocumentFragment();
+    avatarPreview.src = result;
+    fragment.appendChild(avatarPreview);
+    adFormAvatar.innerHTML = '';
+    adFormAvatar.appendChild(fragment);
+};
+
+// Создать превью фотографии жилья
+const getPhoto = (result) => {
+    adFormPhoto.innerHTML = '';
+    const fragment = document.createDocumentFragment();
+    const element = document.createElement('img');
+    element.src = result;
+    element.alt = 'Фото жилья';
+    element.width = IMG_WIDTH;
+    element.height = IMG_HEIGHT;
+    fragment.appendChild(element);
+    adFormPhoto.appendChild(fragment);
+};
+
+const getAvatarPreview = () => renderPhoto(avatarChooser, getAvatar);
+const getPhotoPreview = () => renderPhoto(photoChooser, getPhoto);
+
+getAvatarPreview();
+getPhotoPreview();
+
+// Неактивное состояние страницы: формы "Ваше объявление" и фильтра для карты
+const disablePage = () => {
+    adForm.classList.add('ad-form--disabled');
+    for (const elem of adFormList) {
+        elem.setAttribute('disabled', 'disabled');
+    }
+    mapFilters.classList.add('map__filters--disabled');
+    for (const elem of mapFiltersList) {
+        elem.setAttribute('disabled', 'disabled');
+    }
+};
+
+// Активное состояние формы "Ваше объявление"
+const activateAd = () => {
+    adForm.classList.remove('ad-form--disabled');
+    for (const elem of adFormList) {
+        elem.removeAttribute('disabled');
+    }
+};
+
+// Отправка формы
 
 const onSuccess = () => {
     showSuccess('Ура!')
@@ -157,3 +187,6 @@ adForm.addEventListener('submit', (evt) => {
     console.log(formData)
     request(onSuccess, onError, 'POST', formData)
 })
+
+
+export { disablePage, activateAd }
