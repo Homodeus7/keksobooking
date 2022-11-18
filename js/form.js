@@ -1,9 +1,7 @@
 
-import { showError, showSuccess, onAlertEscKeydown } from './message.js';
+import { showError, showSuccess, } from './message.js';
 import { request } from './fetch.js';
 import { renderPhoto } from './pictures.js';
-
-
 
 const IMG_WIDTH = 70;
 const IMG_HEIGHT = 70;
@@ -169,22 +167,19 @@ const activateAd = () => {
 // Отправка формы
 
 const onSuccess = () => {
-    showSuccess('Ура!')
-    onAlertEscKeydown()
-
+    showSuccess()
     //closeModal();
-    //adForm.reset();
+    adForm.reset();
 }
 
 const onError = () => {
-    showError('Что-то пошло не так', 'Попробуйте еще раз');
+    showError();
 }
 
 adForm.addEventListener('submit', (evt) => {
     evt.preventDefault();
 
     const formData = new FormData(evt.target);
-    console.log(formData)
     request(onSuccess, onError, 'POST', formData)
 })
 
