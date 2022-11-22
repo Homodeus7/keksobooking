@@ -48,15 +48,14 @@ const filters = {
             return element === value ? element : ''
         }
     },
-    features: (element, value) => {
-        if (value === '') {
-            return element
-        } else {
-            return element === value ? element : ''
+    features: (elements, values) => {
+
+        if (elements) {
+            let arr = values.map(v => elements.includes(v) ? v : '')
+            console.log(arr)
         }
     },
 }
-
 
 const removePoints = () => {
     const images = document.querySelectorAll('.leaflet-marker-icon ');
@@ -80,20 +79,19 @@ const onError = () => {
 request(onSuccess, onError, 'GET')
 
 const onFilterClick = () => {
-    console.log('hello')
     removePoints();
+
+    const features = Array.from(featuresChexboxs).map(ch => ch.checked ? ch.value : '')
 
     const result = arrayOffers.filter(offer =>
         filters.type(offer.offer.type, housingSelect.value)
         && filters.price(offer.offer.price, priceSelect.value)
         && filters.rooms(offer.offer.rooms.toString(), roomsSelect.value)
         && filters.guests(offer.offer.guests.toString(), guestsSelect.value)
-        //&& filters.features(offer.offer.features, featuresChexboxs.value)
+        && filters.features(offer.offer.features, features)
     )
     createPoints(result)
 }
-// const onCheck = () => { Array.from(featuresChexboxs).map(ch => console.log(ch.checked)) }
-// featuresChexboxs.addEventListener('change', onCheck)
 
 filter.addEventListener('change', onFilterClick)
 
