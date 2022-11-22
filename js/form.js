@@ -168,7 +168,6 @@ const activateAd = () => {
 
 const onSuccess = () => {
     showSuccess()
-    //closeModal();
     adForm.reset();
 }
 
@@ -183,5 +182,12 @@ adForm.addEventListener('submit', (evt) => {
     request(onSuccess, onError, 'POST', formData)
 })
 
+// Нажатие на кнопку "очистить" (reset-форма)
+const onButtonReset = (cb) => {
+    adFormReset.addEventListener('click', (evt) => {
+        evt.preventDefault();
+        cb();
+    });
+};
 
-export { disablePage, activateAd }
+export { disablePage, activateAd, onButtonReset }

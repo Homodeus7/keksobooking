@@ -15,7 +15,6 @@ const request = (onSuccess, onError, method, data) => {
 
         })
         .catch(() => {
-
             onError()
         })
 }

@@ -8,9 +8,9 @@ const errorTemplateButton = errorTemplate.querySelector('.error__button')
 const showSuccess = () => {
     document.body.appendChild(successTemplate);
     const keydownHandler = (evt) => {
-        if (checkEsc(evt)) {
-            evt.preventDeafault();
-            successTemplate.remove();
+        if (isEscEvent(evt)) {
+            evt.preventDefault();
+            successPopup.remove();
             document.removeEventListener('keydown', keydownHandler);
         }
     };
