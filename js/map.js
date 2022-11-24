@@ -57,6 +57,16 @@ const mainPinMarker = L.marker(
 
 mainPinMarker.addTo(map);
 
+const removePoints = () => {
+    const images = document.querySelectorAll('.leaflet-marker-icon ');
+    if (images) {
+        images.forEach(element => {
+            element.remove();
+        });
+    }
+}
+
+
 //О бработчик события moveend означает,что пользователь закончил передвигать маркер, и выведем в консоль новые координаты метки.
 // Обратите внимание, что как и у обычного события, у события карты есть target, только методы у объекта события свои, нужные для карты. 
 // Метод getLatLng() возвращает объект с новыми координатами.
@@ -122,4 +132,4 @@ const createPoints = (points) => {
     });
 }
 
-export { createPoints }
+export { createPoints, removePoints }

@@ -1,38 +1,69 @@
-import { createPoints } from './map.ls'
+import { removePoints } from './map.js';
 
+
+const SIMILAR_OFFER_COUNT = 10;
+const filter = document.querySelector('.map__filters')
 const housingSelect = document.querySelector('#housing-type');
 const priceSelect = document.querySelector('#housing-price');
 const roomsSelect = document.querySelector('#housing-rooms');
 const guestsSelect = document.querySelector('#housing-guests');
-const featuresSelect = document.querySelector('#housing-features');
-const SIMILAR_OFFER_COUNT = 10;
-const filter = document.querySelector('.map__filters')
+const featuresChexboxs = document.querySelectorAll('.map__checkbox');
+let arrayOffers = [];
 
+const filters = {
+    type: (element, value) => {
+        if (value === 'any') {
+            return element
+        } else {
+            return element === value ? element : ''
+        }
+    },
+    price: (element, value) => {
+        if (value === 'any') {
+            return element
+        } else if (value === 'middle') {
+            return element >= 10000 && element <= 50000
+        } else if (value === 'low') {
+            return element <= 10000
+        } else if (value === 'high') {
+            return element >= 50000
+        }
+    },
+    rooms: (element, value) => {
+        if (value === 'any') {
+            return element
+        } else {
+            return element === value ? element : ''
+        }
+    },
+    guests: (element, value) => {
+        if (value === 'any') {
+            return element
+        } else {
+            return element === value ? element : ''
+        }
+    },
+    features: (elements, values) => {
+        if (elements) {
+            const isAvailable = (feature) => elements.includes(feature)
+            return values.every(v => isAvailable(v)) ? elements : ''
+        } else return !elements
+    },
+}
 
+const onFilterClick = (offers) => {
+    removePoints();
+    const features = Array.from(featuresChexboxs).map(ch => ch.checked ? ch.value : '').filter(ch => ch)
+    const result = arrayOffers.filter(offer =>
+        filters.type(offer.offer.type, housingSelect.value)
+        && filters.price(offer.offer.price, priceSelect.value)
+        && filters.rooms(offer.offer.rooms.toString(), roomsSelect.value)
+        && filters.guests(offer.offer.guests.toString(), guestsSelect.value)
+        && filters.features(offer.offer.features, features)
+    )
+    createPoints(result)
+}
 
+filter.addEventListener('change', onFilterClick)
 
-// ==============offer
-// title: "Квартира студия в престижном районе", address: "Chiyoda-ku, Tōkyō-to 102-0091", price: 88000, … }
-// ​​​
-// address: "Chiyoda-ku, Tōkyō-to 102-0091"
-// ​​​
-// checkin: "7:00"
-// ​​​
-// checkout: "10:00"
-// ​​​
-// description: "Комната в трёхкомнатной квартире, подойдёт молодым путешественникам."
-// ​​​
-// features: Array(6) [ "wifi", "washer", "elevator", … ]
-// ​​​
-// guests: 5
-// ​​​
-// photos: Array(3) [ "https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/cameron-venti-R64qgQ6rr_o.jpg", "https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/brandon-hoogenboom-SNxQGWxZQi0.jpg", "https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/claire-rendall-b6kAwr1i0Iw.jpg" ]
-// ​​​
-// price: 88000
-// ​​​
-// rooms: 6
-// ​​​
-// title: "Квартира студия в престижном районе"
-// ​
-// type: "bungalow"
-// =======================
+export { onFilterClick }

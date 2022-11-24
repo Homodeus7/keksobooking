@@ -1,22 +1,17 @@
 const Urls = {
     GET: 'https://23.javascript.pages.academy/keksobooking/data',
-    POST: 'https://23.javascript.pages.academy/keksobooking',
+    post: 'https://23.javascript.pages.academy/keksobooking',
 }
 
-const request = (onSuccess, onError, method, data) => {
-    fetch(Urls[method],
-        {
-            method: method,
-            body: data,
-        })
+const getData = (onSuccess) => {
+    fetch(Urls.GET)
         .then((response) => response.json())
         .then((response) => {
             onSuccess(response)
-
         })
-        .catch(() => {
-            onError()
+        .catch((err) => {
+            console.log(`Ошибка загрузки данных ${err}`);
         })
 }
 
-export { request }
+export { getData }
