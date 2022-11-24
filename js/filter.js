@@ -1,5 +1,4 @@
-import { removePoints } from './map.js';
-
+import { removePoints, createPoints, addMainPinMarker } from './map.js';
 
 const SIMILAR_OFFER_COUNT = 10;
 const filter = document.querySelector('.map__filters')
@@ -8,7 +7,7 @@ const priceSelect = document.querySelector('#housing-price');
 const roomsSelect = document.querySelector('#housing-rooms');
 const guestsSelect = document.querySelector('#housing-guests');
 const featuresChexboxs = document.querySelectorAll('.map__checkbox');
-let arrayOffers = [];
+
 
 const filters = {
     type: (element, value) => {
@@ -51,8 +50,14 @@ const filters = {
     },
 }
 
+let arrayOffers = [];
+
 const onFilterClick = (offers) => {
+    console.log(offers)
     removePoints();
+
+    if (!arrayOffers.length) arrayOffers = offers.slice()
+
     const features = Array.from(featuresChexboxs).map(ch => ch.checked ? ch.value : '').filter(ch => ch)
     const result = arrayOffers.filter(offer =>
         filters.type(offer.offer.type, housingSelect.value)

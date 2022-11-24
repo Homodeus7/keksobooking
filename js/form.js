@@ -1,6 +1,6 @@
 
 import { showError, showSuccess, } from './message.js';
-import { request } from './fetch.js';
+//import {  } from './fetch.js';
 import { renderPhoto } from './pictures.js';
 
 const IMG_WIDTH = 70;

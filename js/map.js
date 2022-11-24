@@ -55,17 +55,8 @@ const mainPinMarker = L.marker(
     },
 );
 
-mainPinMarker.addTo(map);
-
-const removePoints = () => {
-    const images = document.querySelectorAll('.leaflet-marker-icon ');
-    if (images) {
-        images.forEach(element => {
-            element.remove();
-        });
-    }
-}
-
+const addMainPinMarker = () => mainPinMarker.addTo(map);
+const removePoints = () => markerGroup.clearLayers();
 
 //О бработчик события moveend означает,что пользователь закончил передвигать маркер, и выведем в консоль новые координаты метки.
 // Обратите внимание, что как и у обычного события, у события карты есть target, только методы у объекта события свои, нужные для карты. 
@@ -98,6 +89,8 @@ const createCustomPopup = (point) => {
 
 // А дальше в проходке forEach по циклу насоздаём маркеров и понадобавляем их на карту.
 
+const markerGroup = L.layerGroup().addTo(map);
+
 const createPoints = (points) => {
 
     points.forEach((point) => {
@@ -122,7 +115,7 @@ const createPoints = (points) => {
         //keepInView, чтобы карта автоматичски переместилась, если балун вылезает за границы. Кликните по самой верхей метке, чтобы увидеть это в действии.
 
         marker
-            .addTo(map)
+            .addTo(markerGroup)
             .bindPopup(
                 createCustomPopup(point),
                 {
@@ -132,4 +125,4 @@ const createPoints = (points) => {
     });
 }
 
-export { createPoints, removePoints }
+export { createPoints, removePoints, addMainPinMarker }
